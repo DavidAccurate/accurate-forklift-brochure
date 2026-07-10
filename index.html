@@ -30,7 +30,6 @@
     background-color: white;
     box-shadow: inset 0 0 30px rgba(0,0,0,0.15);
     overflow: hidden;
-    cursor: zoom-in;
   }
   .page img {
     width: 100%; height: 100%; object-fit: cover; display: block;
@@ -59,26 +58,6 @@
   button.secondary:hover { background: #555; }
   .divider { width: 60%; height: 1px; background: rgba(255,255,255,0.15); margin: 4px 0; }
 
-  /* Zoom lightbox for reading page text up close */
-  #zoomOverlay {
-    display: none;
-    position: fixed; inset: 0; z-index: 1000;
-    background: rgba(0,0,0,0.92);
-    align-items: center; justify-content: center;
-    cursor: zoom-out;
-    pointer-events: none; /* mouse keeps hovering the page underneath, not this overlay */
-  }
-  #zoomOverlay.active { display: flex; }
-  #zoomOverlay img {
-    max-width: 96vw; max-height: 96vh;
-    object-fit: contain;
-    box-shadow: 0 0 60px rgba(0,0,0,0.6);
-  }
-  #zoomOverlay .zoomHint {
-    position: absolute; bottom: 18px; left: 0; right: 0;
-    text-align: center; color: #ccc; font-size: 13px;
-  }
-
   @media (max-width: 700px) {
     #wrap { flex-direction: column; gap: 10px; padding-top: 10px; }
     #sidebar { flex-direction: row; }
@@ -89,11 +68,11 @@
 <body>
   <div id="wrap">
     <div id="book">
-      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/24b68325-bc7f-4fa0-964d-0d1fbcd575c8.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/24b68325-bc7f-4fa0-964d-0d1fbcd575c8.jpeg" /></div>
-      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/7b300881-c542-45ec-86c6-ee9eefab3c54.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/7b300881-c542-45ec-86c6-ee9eefab3c54.jpeg" /></div>
-      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/e770a13f-6f62-4a3f-b8e7-224f169b629a.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/e770a13f-6f62-4a3f-b8e7-224f169b629a.jpeg" /></div>
-      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/601de6ad-3ee4-4407-a240-f941518b5e69.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/601de6ad-3ee4-4407-a240-f941518b5e69.jpeg" /></div>
-      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/14b3a434-0d0a-4acb-b04b-fdf12a9ecb57.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/14b3a434-0d0a-4acb-b04b-fdf12a9ecb57.jpeg" /></div>
+      <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/24b68325-bc7f-4fa0-964d-0d1fbcd575c8.jpeg" /></div>
+      <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/7b300881-c542-45ec-86c6-ee9eefab3c54.jpeg" /></div>
+      <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/e770a13f-6f62-4a3f-b8e7-224f169b629a.jpeg" /></div>
+      <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/601de6ad-3ee4-4407-a240-f941518b5e69.jpeg" /></div>
+      <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/14b3a434-0d0a-4acb-b04b-fdf12a9ecb57.jpeg" /></div>
     </div>
 
     <div id="sidebar">
@@ -101,19 +80,13 @@
       <button id="nextBtn">Next ›</button>
       <div class="divider"></div>
       <button id="fullscreenBtn" class="secondary">⛶ Fullscreen</button>
-      <div id="hint">Drag a page edge to turn it. Hover a page to zoom in and read (tap on mobile).</div>
+      <div id="hint">Drag a page edge, or use the buttons, to turn the page.</div>
       <div id="err"></div>
     </div>
   </div>
 
-  <div id="zoomOverlay">
-    <img id="zoomImg" src="" alt="Zoomed page" />
-    <div class="zoomHint">Move away to close</div>
-  </div>
-
 <script>
   let pageFlip = null;
-  const isTouchDevice = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
 
   function computeSize() {
     const ratio = 673 / 520; // page aspect ratio (h/w)
@@ -128,14 +101,6 @@
       w = h / ratio;
     }
     return { width: Math.round(w), height: Math.round(h) };
-  }
-
-  function openZoom(full) {
-    document.getElementById('zoomImg').src = full;
-    document.getElementById('zoomOverlay').classList.add('active');
-  }
-  function closeZoom() {
-    document.getElementById('zoomOverlay').classList.remove('active');
   }
 
   let resizeDebounce = null;
@@ -181,32 +146,6 @@
         clearTimeout(resizeDebounce);
         resizeDebounce = setTimeout(applySize, 120);
       });
-
-      // Zoom trigger: hover on desktop/mouse, tap-to-toggle on touch devices
-      document.querySelectorAll('.page').forEach((pageEl) => {
-        const full = pageEl.getAttribute('data-full');
-        if (!full) return;
-
-        if (isTouchDevice) {
-          pageEl.addEventListener('click', (e) => {
-            openZoom(full);
-            e.stopPropagation();
-          });
-        } else {
-          let hoverTimer = null;
-          pageEl.addEventListener('mouseenter', () => {
-            hoverTimer = setTimeout(() => openZoom(full), 550);
-          });
-          pageEl.addEventListener('mouseleave', () => {
-            clearTimeout(hoverTimer);
-            closeZoom();
-          });
-          pageEl.addEventListener('mousedown', () => {
-            clearTimeout(hoverTimer);
-            closeZoom();
-          });
-        }
-      });
     } catch (e) {
       document.getElementById('err').textContent = 'Error: ' + e.message;
       console.error(e);
@@ -227,11 +166,6 @@
       img.addEventListener('error', checkAllLoaded);
     }
   });
-
-  if (isTouchDevice) {
-    document.getElementById('zoomOverlay').style.pointerEvents = 'auto';
-  }
-  document.getElementById('zoomOverlay').addEventListener('click', closeZoom);
 
   // Fullscreen toggle — resize is debounced above so this no longer causes a jarring snap
   document.getElementById('fullscreenBtn').addEventListener('click', () => {
