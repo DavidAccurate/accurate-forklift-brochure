@@ -159,7 +159,7 @@
           let hoverTimer = null;
           pageEl.addEventListener('mouseenter', () => {
             // small delay so a quick drag-to-flip gesture doesn't trigger zoom
-            hoverTimer = setTimeout(() => openZoom(full), 180);
+            hoverTimer = setTimeout(() => openZoom(full), 550);
           });
           pageEl.addEventListener('mouseleave', () => {
             clearTimeout(hoverTimer);
