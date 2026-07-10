@@ -13,57 +13,106 @@
     font-family: 'Helvetica Neue', Arial, sans-serif;
     overflow: hidden;
   }
-  #book { width: 520px; height: 673px; margin: 0 auto; }
+  #book { margin: 0 auto; }
   .page {
-    width: 520px; height: 673px;
     background-color: white;
     box-shadow: inset 0 0 30px rgba(0,0,0,0.15);
     overflow: hidden;
+    cursor: zoom-in;
   }
   .page img {
     width: 100%; height: 100%; object-fit: cover; display: block;
+    pointer-events: none;
   }
   #hint {
-    color: #ddd; font-size: 14px; margin-top: 14px; letter-spacing: 0.5px; opacity: 0.85;
+    color: #ddd; font-size: 14px; margin-top: 12px; letter-spacing: 0.5px; opacity: 0.85;
+    text-align: center;
   }
   #controls {
-    margin-top: 10px; display: flex; gap: 14px;
+    margin-top: 10px; display: flex; gap: 14px; align-items: center;
   }
   #err { color: #f66; font-size: 13px; margin-top: 10px; max-width: 500px; text-align: center; white-space: pre-wrap; }
   button {
-    background: #E31E24; color: white; border: none; padding: 8px 18px;
+    background: #E31E24; color: white; border: none; padding: 9px 20px;
     border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px;
     letter-spacing: 0.5px;
   }
   button:hover { background: #B0161B; }
+  button.secondary { background: #333; }
+  button.secondary:hover { background: #555; }
+
+  /* Zoom lightbox for reading page text up close */
+  #zoomOverlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.92);
+    align-items: center; justify-content: center;
+    cursor: zoom-out;
+  }
+  #zoomOverlay.active { display: flex; }
+  #zoomOverlay img {
+    max-width: 96vw; max-height: 96vh;
+    object-fit: contain;
+    box-shadow: 0 0 60px rgba(0,0,0,0.6);
+  }
+  #zoomOverlay .zoomHint {
+    position: absolute; bottom: 18px; left: 0; right: 0;
+    text-align: center; color: #ccc; font-size: 13px;
+  }
 </style>
 </head>
 <body>
   <div id="book">
-    <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/a4bd278a-07df-4476-8e74-ba6642ff293c.jpeg" /></div>
-    <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/6b55e218-bb62-43bb-aad2-fb17ddf35a6c.jpeg" /></div>
-    <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/f2de269e-fe00-4f04-b8f3-d9ea995d0278.jpeg" /></div>
-    <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/b860204d-6911-410e-945d-5fb4b645b818.jpeg" /></div>
-    <div class="page"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/743f5997-ebc2-49e1-a1f0-d9812e9a69a5.jpeg" /></div>
+    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/a4bd278a-07df-4476-8e74-ba6642ff293c.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/a4bd278a-07df-4476-8e74-ba6642ff293c.jpeg" /></div>
+    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/6b55e218-bb62-43bb-aad2-fb17ddf35a6c.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/6b55e218-bb62-43bb-aad2-fb17ddf35a6c.jpeg" /></div>
+    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/f2de269e-fe00-4f04-b8f3-d9ea995d0278.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/f2de269e-fe00-4f04-b8f3-d9ea995d0278.jpeg" /></div>
+    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/b860204d-6911-410e-945d-5fb4b645b818.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/b860204d-6911-410e-945d-5fb4b645b818.jpeg" /></div>
+    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/743f5997-ebc2-49e1-a1f0-d9812e9a69a5.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/743f5997-ebc2-49e1-a1f0-d9812e9a69a5.jpeg" /></div>
   </div>
   <div id="controls">
     <button id="prevBtn">‹ Prev</button>
     <button id="nextBtn">Next ›</button>
+    <button id="fullscreenBtn" class="secondary">⛶ Fullscreen</button>
   </div>
-  <div id="hint">Click the edge of a page, or drag it, to turn — like a real magazine</div>
+  <div id="hint">Click/drag a page edge to turn it &nbsp;•&nbsp; Click a page to zoom in and read</div>
   <div id="err"></div>
 
+  <div id="zoomOverlay">
+    <img id="zoomImg" src="" alt="Zoomed page" />
+    <div class="zoomHint">Click anywhere to close</div>
+  </div>
+
 <script>
+  let pageFlip = null;
+
+  function computeSize() {
+    const ratio = 673 / 520; // page aspect ratio (h/w)
+    const maxW = Math.min(window.innerWidth * 0.94, 1000);
+    const maxH = window.innerHeight * 0.80;
+    let w = maxW;
+    let h = w * ratio;
+    if (h > maxH) {
+      h = maxH;
+      w = h / ratio;
+    }
+    return { width: Math.round(w), height: Math.round(h) };
+  }
+
   function initBook() {
     try {
-      const pageFlip = new St.PageFlip(document.getElementById('book'), {
-        width: 520,
-        height: 673,
+      const { width, height } = computeSize();
+      const bookEl = document.getElementById('book');
+      bookEl.style.width = width + 'px';
+      bookEl.style.height = height + 'px';
+
+      pageFlip = new St.PageFlip(bookEl, {
+        width,
+        height,
         size: "fixed",
         minWidth: 280,
-        maxWidth: 700,
+        maxWidth: 1200,
         minHeight: 360,
-        maxHeight: 900,
+        maxHeight: 1500,
         showCover: false,
         usePortrait: true,
         maxShadowOpacity: 0.5,
@@ -75,6 +124,27 @@
 
       document.getElementById('prevBtn').addEventListener('click', () => pageFlip.flipPrev());
       document.getElementById('nextBtn').addEventListener('click', () => pageFlip.flipNext());
+
+      // Recompute size on window resize / orientation change
+      window.addEventListener('resize', () => {
+        const { width, height } = computeSize();
+        bookEl.style.width = width + 'px';
+        bookEl.style.height = height + 'px';
+        pageFlip.updateFromHtml
+          ? pageFlip.updateFromHtml(document.querySelectorAll('.page'))
+          : null;
+      });
+
+      // Click-to-zoom: open the clicked page at full resolution
+      document.querySelectorAll('.page').forEach((pageEl) => {
+        pageEl.addEventListener('click', (e) => {
+          const full = pageEl.getAttribute('data-full');
+          if (!full) return;
+          document.getElementById('zoomImg').src = full;
+          document.getElementById('zoomOverlay').classList.add('active');
+          e.stopPropagation();
+        });
+      });
     } catch (e) {
       document.getElementById('err').textContent = 'Error: ' + e.message;
       console.error(e);
@@ -94,6 +164,23 @@
       img.addEventListener('load', checkAllLoaded);
       img.addEventListener('error', checkAllLoaded);
     }
+  });
+
+  // Zoom overlay close
+  document.getElementById('zoomOverlay').addEventListener('click', () => {
+    document.getElementById('zoomOverlay').classList.remove('active');
+  });
+
+  // Fullscreen toggle
+  document.getElementById('fullscreenBtn').addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    window.dispatchEvent(new Event('resize'));
   });
 </script>
 </body>
