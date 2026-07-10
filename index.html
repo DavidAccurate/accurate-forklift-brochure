@@ -9,11 +9,23 @@
   html, body {
     margin: 0; padding: 0; height: 100%;
     background: radial-gradient(ellipse at center, #2b2b2b 0%, #0a0a0a 100%);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
     font-family: 'Helvetica Neue', Arial, sans-serif;
     overflow: hidden;
   }
-  #book { margin: 0 auto; }
+  #wrap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 22px;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+  #book {
+    margin: 0 auto;
+    transition: width 0.35s ease, height 0.35s ease;
+  }
   .page {
     background-color: white;
     box-shadow: inset 0 0 30px rgba(0,0,0,0.15);
@@ -24,22 +36,28 @@
     width: 100%; height: 100%; object-fit: cover; display: block;
     pointer-events: none;
   }
-  #hint {
-    color: #ddd; font-size: 14px; margin-top: 12px; letter-spacing: 0.5px; opacity: 0.85;
-    text-align: center;
+  #sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
   }
-  #controls {
-    margin-top: 10px; display: flex; gap: 14px; align-items: center;
+  #hint {
+    color: #ddd; font-size: 12.5px; line-height: 1.5; letter-spacing: 0.3px; opacity: 0.85;
+    text-align: center; max-width: 130px;
   }
   #err { color: #f66; font-size: 13px; margin-top: 10px; max-width: 500px; text-align: center; white-space: pre-wrap; }
   button {
-    background: #E31E24; color: white; border: none; padding: 9px 20px;
+    background: #E31E24; color: white; border: none; padding: 10px 16px;
     border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px;
     letter-spacing: 0.5px;
+    width: 110px;
   }
   button:hover { background: #B0161B; }
   button.secondary { background: #333; }
   button.secondary:hover { background: #555; }
+  .divider { width: 60%; height: 1px; background: rgba(255,255,255,0.15); margin: 4px 0; }
 
   /* Zoom lightbox for reading page text up close */
   #zoomOverlay {
@@ -60,23 +78,33 @@
     position: absolute; bottom: 18px; left: 0; right: 0;
     text-align: center; color: #ccc; font-size: 13px;
   }
+
+  @media (max-width: 700px) {
+    #wrap { flex-direction: column; gap: 10px; padding-top: 10px; }
+    #sidebar { flex-direction: row; }
+    #hint { max-width: 280px; }
+  }
 </style>
 </head>
 <body>
-  <div id="book">
-    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/a4bd278a-07df-4476-8e74-ba6642ff293c.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/a4bd278a-07df-4476-8e74-ba6642ff293c.jpeg" /></div>
-    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/6b55e218-bb62-43bb-aad2-fb17ddf35a6c.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/6b55e218-bb62-43bb-aad2-fb17ddf35a6c.jpeg" /></div>
-    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/f2de269e-fe00-4f04-b8f3-d9ea995d0278.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/f2de269e-fe00-4f04-b8f3-d9ea995d0278.jpeg" /></div>
-    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/b860204d-6911-410e-945d-5fb4b645b818.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/b860204d-6911-410e-945d-5fb4b645b818.jpeg" /></div>
-    <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/743f5997-ebc2-49e1-a1f0-d9812e9a69a5.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/743f5997-ebc2-49e1-a1f0-d9812e9a69a5.jpeg" /></div>
+  <div id="wrap">
+    <div id="book">
+      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/24b68325-bc7f-4fa0-964d-0d1fbcd575c8.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/24b68325-bc7f-4fa0-964d-0d1fbcd575c8.jpeg" /></div>
+      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/7b300881-c542-45ec-86c6-ee9eefab3c54.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/7b300881-c542-45ec-86c6-ee9eefab3c54.jpeg" /></div>
+      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/e770a13f-6f62-4a3f-b8e7-224f169b629a.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/e770a13f-6f62-4a3f-b8e7-224f169b629a.jpeg" /></div>
+      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/601de6ad-3ee4-4407-a240-f941518b5e69.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/601de6ad-3ee4-4407-a240-f941518b5e69.jpeg" /></div>
+      <div class="page" data-full="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/14b3a434-0d0a-4acb-b04b-fdf12a9ecb57.jpeg"><img src="https://galaxy-prod.tlcdn.com/gen/user_2zjLopEy7F0lHwAkoTVfhQ1FSZl/14b3a434-0d0a-4acb-b04b-fdf12a9ecb57.jpeg" /></div>
+    </div>
+
+    <div id="sidebar">
+      <button id="prevBtn">‹ Prev</button>
+      <button id="nextBtn">Next ›</button>
+      <div class="divider"></div>
+      <button id="fullscreenBtn" class="secondary">⛶ Fullscreen</button>
+      <div id="hint">Drag a page edge to turn it. Hover a page to zoom in and read (tap on mobile).</div>
+      <div id="err"></div>
+    </div>
   </div>
-  <div id="controls">
-    <button id="prevBtn">‹ Prev</button>
-    <button id="nextBtn">Next ›</button>
-    <button id="fullscreenBtn" class="secondary">⛶ Fullscreen</button>
-  </div>
-  <div id="hint">Click/drag a page edge to turn it &nbsp;•&nbsp; Hover a page to zoom in and read (tap on mobile)</div>
-  <div id="err"></div>
 
   <div id="zoomOverlay">
     <img id="zoomImg" src="" alt="Zoomed page" />
@@ -89,8 +117,10 @@
 
   function computeSize() {
     const ratio = 673 / 520; // page aspect ratio (h/w)
-    const maxW = Math.min(window.innerWidth * 0.94, 1000);
-    const maxH = window.innerHeight * 0.80;
+    const sidebarReserve = window.innerWidth > 700 ? 170 : 0;
+    const maxW = Math.min((window.innerWidth - sidebarReserve) * 0.92, 1000);
+    const maxHReserve = window.innerWidth > 700 ? 40 : 140;
+    const maxH = window.innerHeight - maxHReserve;
     let w = maxW;
     let h = w * ratio;
     if (h > maxH) {
@@ -106,6 +136,17 @@
   }
   function closeZoom() {
     document.getElementById('zoomOverlay').classList.remove('active');
+  }
+
+  let resizeDebounce = null;
+  function applySize() {
+    const { width, height } = computeSize();
+    const bookEl = document.getElementById('book');
+    bookEl.style.width = width + 'px';
+    bookEl.style.height = height + 'px';
+    if (pageFlip && pageFlip.updateFromHtml) {
+      pageFlip.updateFromHtml(document.querySelectorAll('.page'));
+    }
   }
 
   function initBook() {
@@ -135,14 +176,10 @@
       document.getElementById('prevBtn').addEventListener('click', () => pageFlip.flipPrev());
       document.getElementById('nextBtn').addEventListener('click', () => pageFlip.flipNext());
 
-      // Recompute size on window resize / orientation change
+      // Debounced resize so fullscreen toggles / window resizing don't snap jarringly
       window.addEventListener('resize', () => {
-        const { width, height } = computeSize();
-        bookEl.style.width = width + 'px';
-        bookEl.style.height = height + 'px';
-        pageFlip.updateFromHtml
-          ? pageFlip.updateFromHtml(document.querySelectorAll('.page'))
-          : null;
+        clearTimeout(resizeDebounce);
+        resizeDebounce = setTimeout(applySize, 120);
       });
 
       // Zoom trigger: hover on desktop/mouse, tap-to-toggle on touch devices
@@ -158,7 +195,6 @@
         } else {
           let hoverTimer = null;
           pageEl.addEventListener('mouseenter', () => {
-            // small delay so a quick drag-to-flip gesture doesn't trigger zoom
             hoverTimer = setTimeout(() => openZoom(full), 550);
           });
           pageEl.addEventListener('mouseleave', () => {
@@ -166,7 +202,6 @@
             closeZoom();
           });
           pageEl.addEventListener('mousedown', () => {
-            // dragging to flip the page should cancel the zoom
             clearTimeout(hoverTimer);
             closeZoom();
           });
@@ -193,13 +228,12 @@
     }
   });
 
-  // Touch devices: tap anywhere on the overlay (or the page again) closes it
   if (isTouchDevice) {
     document.getElementById('zoomOverlay').style.pointerEvents = 'auto';
   }
   document.getElementById('zoomOverlay').addEventListener('click', closeZoom);
 
-  // Fullscreen toggle
+  // Fullscreen toggle — resize is debounced above so this no longer causes a jarring snap
   document.getElementById('fullscreenBtn').addEventListener('click', () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen().catch(() => {});
@@ -208,7 +242,8 @@
     }
   });
   document.addEventListener('fullscreenchange', () => {
-    window.dispatchEvent(new Event('resize'));
+    clearTimeout(resizeDebounce);
+    resizeDebounce = setTimeout(applySize, 120);
   });
 </script>
 </body>
